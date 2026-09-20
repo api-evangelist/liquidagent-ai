@@ -1,0 +1,159 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Live GET probes of the named /.well-known/* path list on liquidagent.ai, www.liquidagent.ai,
+  api.liquidagent.ai and docs.liquidagent.ai on 2026-09-19. Every row is a request that was actually
+  issued; every status is the one returned. No MCP host exists to probe (see mcp/liquidagent-ai-mcp.yml).
+summary:
+  hosts_probed: 4
+  paths_probed: 45
+  documents_served: 6
+  hit_hosts: [api.liquidagent.ai]
+  note: >-
+    Every served document sits on the API host. api.liquidagent.ai serves an A2A agent card at BOTH the
+    canonical /.well-known/agent-card.json and the legacy /.well-known/agent.json (byte-identical, 3,429
+    bytes), an x402 v2 discovery manifest at /.well-known/x402 (byte-identical to /openapi.json - the
+    provider serves its OpenAPI as the x402 manifest), an x402 resource catalog at
+    /.well-known/x402-resources, and an ERC-8004 registration file at /.well-known/erc8004.json. It also
+    serves an agents.txt at the root. None of the OAuth/OIDC, security.txt, api-catalog, ai-plugin,
+    UCP/ACP/AAuth or APIs.json paths exist on any host. The apex 307s every path to www., and www. returns
+    a real 404 for every /.well-known/* path. docs.liquidagent.ai is a dead Vercel deployment
+    (DEPLOYMENT_NOT_FOUND) behind a Let's Encrypt certificate that expired 2026-03-07.
+  path_echo_control: passed
+  path_echo_control_note: >-
+    GET https://api.liquidagent.ai/.well-known/liquidagent-ai-negative-control-9f2c7a1e.json returned 404
+    with the API's JSON NOT_FOUND envelope, so the 200s on this host are real documents, not a catch-all.
+hosts:
+- host: api.liquidagent.ai
+  role: API host (OpenAPI servers[] and apis[].baseURL); the only host serving any discovery document
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    file: ../a2a/liquidagent-ai-agent-card.json
+    standard: A2A Agent Card (graded in a2a/liquidagent-ai-a2a.yml)
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    file: ../a2a/liquidagent-ai-agent-card.json
+    standard: A2A Agent Card, pre-0.3 legacy path
+    note: Byte-identical to /.well-known/agent-card.json; not saved twice.
+  - path: /.well-known/x402
+    status: 200
+    content_type: application/json; charset=utf-8
+    file: liquidagent-ai-x402.json
+    standard: x402 discovery manifest
+    note: >-
+      Byte-identical to https://api.liquidagent.ai/openapi.json (26,719 bytes). The provider publishes
+      its OpenAPI, carrying x-payment / x-payment-info per paid operation, as the x402 manifest.
+  - path: /.well-known/x402-resources
+    status: 200
+    content_type: application/json; charset=utf-8
+    file: liquidagent-ai-x402-resources.json
+    standard: x402 v2 resource catalog (x402Version 2, accepts[] exact-scheme price entries per resource)
+  - path: /.well-known/erc8004.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    file: liquidagent-ai-erc8004.json
+    standard: ERC-8004 registration-v1 (https://eips.ethereum.org/EIPS/eip-8004#registration-v1)
+    note: Declares agentId 74094 on registry eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432, x402Support true, and the services list (web, A2A, openapi, x402, guide, llms.txt, source, signals, publish, gas-sponsor).
+  - path: /agents.txt
+    status: 200
+    content_type: text/plain; charset=utf-8
+    file: liquidagent-ai-agents.txt
+    standard: agents.txt (https://agents-txt.com), non-well-known root path
+    note: Names the A2A card plus x-x402, x-openapi, x-guide, x-source, x-erc8004, x-gas-sponsor and x-identity lines.
+  - path: /llms.txt
+    status: 200
+    content_type: text/plain; charset=utf-8
+    file: ../llms/liquidagent-ai-llms.txt
+    standard: llms.txt
+  - path: /robots.txt
+    status: 200
+    content_type: text/plain; charset=utf-8
+    note: Allows every listed AI crawler (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot, ...) and names the discovery surface in comments; Sitemap https://api.liquidagent.ai/sitemap.xml (200) lists the same documents.
+- host: liquidagent.ai
+  role: Registrable domain (apex); 307-redirects every path to https://www.liquidagent.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    note: 307 to www., then 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+  - path: /apis.json
+    status: 404
+- host: www.liquidagent.ai
+  role: Public website (Vercel-hosted Next.js single-page app; the human product, a Base mini app)
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+  - path: /llms-full.txt
+    status: 404
+  - path: /openapi.json
+    status: 404
+  - path: /robots.txt
+    status: 404
+  - path: /sitemap.xml
+    status: 404
+- host: docs.liquidagent.ai
+  role: Former docs host; dead
+  documents:
+  - path: /
+    status: 404
+    note: Vercel DEPLOYMENT_NOT_FOUND; TLS certificate (Let's Encrypt R13, CN docs.liquidagent.ai) expired 2026-03-07. No document on this host is reachable.

@@ -64,5 +64,18 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Liquid Agent is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry) and added to the network as a stub for full-pipeline profiling.
-- https://liquidagent.ai/
+Liquid Agent is an agent-native money layer on Base. For people it is a USDC account (yield, payments and stocks from one balance, through the app at liquidagent.ai); for AI agents it is a permissionless HTTP API at api.liquidagent.ai that mints a self-custodied ERC-4626 vault holding Coinbase's tokenized NVDA, META, AAPL and GOOGL, buys in from $1, sets custom weights, rebalances and exits to USDC or in-kind any block. Reads are free and need no key; every write returns unsigned calldata the agent signs with its own wallet. Three paid surfaces settle per call in USDC over x402 v2: basket rebalancing signals ($0.04), a shareable portfolio page ($0.25) and an ERC-4337 / ERC-7677 gas sponsor (from $0.03) on Base, Polygon and Solana.
+
+## Public surface (as profiled 2026-09-19)
+
+- Website: https://liquidagent.ai/ (Vercel-hosted single-page app; the human product)
+- API host and documentation: https://api.liquidagent.ai (the guide at /v1/guide is the only human-readable reference; docs.liquidagent.ai is a dead deployment)
+- OpenAPI 3.1.0, 17 operations: https://api.liquidagent.ai/openapi.json (saved to `openapi/`)
+- A2A agent card: https://api.liquidagent.ai/.well-known/agent-card.json (saved and graded in `a2a/`)
+- x402 discovery manifest and resource catalog: /.well-known/x402, /.well-known/x402-resources (saved in `well-known/`)
+- ERC-8004 registration (agentId 74094 on Base): /.well-known/erc8004.json
+- llms.txt and agents.txt: https://api.liquidagent.ai/llms.txt, /agents.txt
+- Self-measured status endpoint: https://api.liquidagent.ai/v1/status
+- Open-source examples, spec and two provider-authored Agent Skills (MIT): https://github.com/LiquidAgent/liquidagentx402
+
+Not found: an MCP server, a client library in any registry, OAuth/OIDC discovery, security.txt, an API catalog, a changelog, rate-limit documentation, terms or privacy pages, a sandbox or testnet.

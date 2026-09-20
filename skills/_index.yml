@@ -1,0 +1,26 @@
+generated: '2026-09-19'
+method: searched
+source: https://github.com/LiquidAgent/liquidagentx402/tree/main/skills
+note: >-
+  Both skills are PROVIDER-PUBLISHED and saved verbatim from the provider's open-source repo (MIT); nothing
+  was generated. Each is an OpenClaw-format SKILL.md (frontmatter name/description/homepage/metadata.openclaw)
+  distributed through ClawHub ("clawhub install liquid-agent-stocks", "clawhub install liquid-gas-sponsor")
+  and skills.sh ("npx skills add LiquidAgent/liquidagentx402"). Operations listed here were verified verbatim
+  against openapi/liquidagent-ai-openapi.yml.
+skills:
+- file: liquidagent-ai-liquid-agent-stocks.md
+  name: liquid-agent-stocks
+  description: Buy, hold, rebalance and sell a basket of Coinbase tokenized US stocks on Base from $1 through the free Liquid Agent API.
+  api: openapi/liquidagent-ai-openapi.yml
+  operations: [get_v1_guide, get_v1_basket, get_v1_quote, get_v1_balance_agent, post_v1_create-vault, post_v1_set-weights, post_v1_buy, get_v1_vault_address, post_v1_rebalance, post_v1_redeem, post_v1_send, getV1Signals, postV1Publish, postV1Gas]
+  source: https://raw.githubusercontent.com/LiquidAgent/liquidagentx402/main/skills/liquid-agent-stocks/SKILL.md
+  fetched: '2026-09-19'
+  http_status: 200
+- file: liquidagent-ai-liquid-gas-sponsor.md
+  name: liquid-gas-sponsor
+  description: Send any transaction on Base with a wallet that holds USDC but no ETH, paying gas per operation in USDC over x402 through an ERC-4337 paymaster.
+  api: openapi/liquidagent-ai-openapi.yml
+  operations: [getV1Gas, postV1Gas, getV1GasSolana, postV1GasSolana]
+  source: https://raw.githubusercontent.com/LiquidAgent/liquidagentx402/main/skills/liquid-gas-sponsor/SKILL.md
+  fetched: '2026-09-19'
+  http_status: 200

@@ -1,0 +1,122 @@
+generated: '2026-09-19'
+method: probed
+source: https://api.liquidagent.ai/.well-known/agent-card.json
+card:
+  file: a2a/liquidagent-ai-agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: api.liquidagent.ai
+  also_served_at: /.well-known/agent.json
+  note: >-
+    The card is served from the API host at both the canonical A2A path and the pre-0.3 legacy path, byte-identical
+    (3,429 bytes). The apex liquidagent.ai 307s both paths to www.liquidagent.ai, which returns a real 404 for each.
+    Ownership is not in question: api.liquidagent.ai is the servers[] host of the provider's OpenAPI, the card's
+    provider.organization is "Liquid Agent" with provider.url https://liquidagent.ai, the provider's own llms.txt,
+    agents.txt, robots.txt, sitemap.xml and ERC-8004 registration all name this exact URL, and the open-source
+    examples repo README lists it under "Discovery (machine-readable, self-hosted)".
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://api.liquidagent.ai/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  body_bytes: 3429
+  body_parses_as: JSON object with AgentCard shape (name, description, url, provider, version, documentationUrl, capabilities, defaultInputModes, defaultOutputModes, skills)
+  corroborating_probes:
+  - url: https://api.liquidagent.ai/.well-known/agent.json
+    http_status: 200
+    note: byte-identical legacy-path copy
+  - url: https://liquidagent.ai/.well-known/agent-card.json
+    http_status: 404
+    note: 307 to www.liquidagent.ai, which 404s
+  - url: https://www.liquidagent.ai/.well-known/agent.json
+    http_status: 404
+  - url: https://api.liquidagent.ai/a2a
+    http_status: 404
+    note: No A2A JSON-RPC endpoint exists; the card's url is the REST API root.
+  - url: https://api.liquidagent.ai/.well-known/erc8004.json
+    http_status: 200
+    note: The ERC-8004 registration independently lists the card as service "A2A" with version "0.3.0".
+agent_card:
+  name: Liquid Agent — Tokenized Stock Index
+  description: Agent-native tokenized-stock index on Base. Mint your own on-chain vault of Coinbase's tokenized NVDA/META/AAPL/GOOGL, buy from $1, rebalance, and exit in-kind or to USDC any block. No oracle, no token, fully self-custodial. Reads free; transactions return unsigned calldata the agent signs.
+  url: https://api.liquidagent.ai
+  version: 1.0.0
+  documentation_url: https://api.liquidagent.ai/v1/guide
+  provider:
+    organization: Liquid Agent
+    url: https://liquidagent.ai
+  capabilities:
+    streaming: false
+    push_notifications: false
+    state_transition_history: false
+  default_input_modes: [application/json]
+  default_output_modes: [application/json]
+  security_schemes: null
+  skill_count: 7
+  skills:
+  - {id: discover-index, name: Discover the stock index, tags: [stocks, index, prices, invest], rest: get_v1_basket}
+  - {id: create-vault, name: Create your own vault, tags: [vault, create, self-custody], rest: post_v1_create-vault}
+  - {id: buy-stocks, name: Buy the tokenized-stock basket, tags: [buy, invest, stocks, deposit], rest: post_v1_buy}
+  - {id: rebalance, name: Rebalance to target weights, tags: [rebalance, portfolio], rest: post_v1_rebalance}
+  - {id: redeem, name: Exit any block, tags: [redeem, exit, withdraw], rest: post_v1_redeem}
+  - {id: basket-signals, name: Get basket rebalancing signals (paid), tags: [signals, analytics, rebalance, stocks, x402, paid], rest: getV1Signals, paid: 0.04 USDC via x402}
+  - {id: gas-sponsor, name: Sponsor gas for a smart-wallet transaction (paid, x402), tags: [gas, paymaster, erc-4337, erc-7677, eip-7702, x402, paid, base], rest: [postV1Gas, postV1GasSolana], paid: from 0.03 USDC via x402}
+conformance:
+  spec: A2A 1.0.0
+  grade: flavored
+  protocol_version: null
+  preferred_transport: null
+  transport: null
+  hard_checks:
+    capabilities_is_object: true
+    protocol_version_present: false
+    skills_is_array: true
+  optional_fields:
+    default_input_modes: true
+    default_output_modes: true
+    preferred_transport: false
+  grade_basis: >-
+    Graded against the A2A 1.0.0 hard checks. capabilities is an OBJECT (pass: streaming, pushNotifications,
+    stateTransitionHistory declared as fields). skills is an ARRAY (pass: seven skills, each with id, name,
+    description, tags and examples). protocolVersion is ABSENT (fail) - neither a top-level protocolVersion
+    (0.3 shape) nor a supportedInterfaces[].protocolVersion (1.0 shape) is declared anywhere in the card, so
+    a reader cannot tell which A2A revision it targets. The provider's ERC-8004 registration says "0.3.0" for
+    the A2A service, but that statement lives in a different document. One hard failure makes the grade
+    flavored regardless of the optional fields, both of which (defaultInputModes, defaultOutputModes) are present.
+  deviations:
+  - field: protocolVersion
+    observed: absent
+    note: No protocolVersion at the top level and no supportedInterfaces[] block. Hard failure.
+  - field: url
+    observed: https://api.liquidagent.ai (the REST API root)
+    note: >-
+      A2A expects url to be the agent's JSON-RPC (or declared transport) endpoint. This card points at the REST
+      base URL; https://api.liquidagent.ai/a2a returns 404 and a JSON-RPC message/send has no documented
+      endpoint. The card is a discovery and capability description, not a callable A2A surface - an A2A client
+      that follows url will reach the REST index document, not a task endpoint.
+  - field: preferredTransport / supportedInterfaces
+    observed: absent
+    note: No transport is declared in either the 0.3 (preferredTransport) or 1.0 (supportedInterfaces) form.
+  - field: securitySchemes / security
+    observed: absent
+    note: >-
+      Two of the seven skills are paid over x402 and the free ones accept optional SIWX identity, but the card
+      declares no security scheme; the payment requirement is stated only in prose ("PAID $0.04 USDC via x402")
+      inside skill descriptions and is not machine-readable from the card. The a2a-x402 payment extension is
+      not declared under capabilities.extensions.
+  - field: skills[].inputModes / outputModes
+    observed: absent per skill
+    note: Only the card-level defaults (application/json) are declared; harmless.
+  - field: skills
+    observed: seven skills, two of them paid
+    note: >-
+      The card omits set-weights, send and publish, which the REST contract and the ERC-8004 services list do
+      expose; the ERC-8004 "web" service lists set-weights as a skill that this card does not carry. Not a
+      spec violation - recorded because the two provider-published skill lists disagree.
+surface_relationship:
+  note: >-
+    Liquid Agent publishes one callable machine surface - the 17-operation REST API - and describes it through
+    several discovery documents (this card, the OpenAPI/x402 manifest, the x402 resource catalog, llms.txt,
+    agents.txt, ERC-8004). The card is a projection of the REST API (every skill maps to a REST operation; see
+    agent_card.skills[].rest) rather than a separate A2A task surface. There is no MCP server.

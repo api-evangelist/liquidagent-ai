@@ -1,0 +1,108 @@
+generated: '2026-09-19'
+method: derived
+status: candidate
+source: openapi/liquidagent-ai-openapi.yml (17 operations); searched for a hosted server first - none exists
+search:
+  probed:
+  - {url: https://api.liquidagent.ai/mcp, method: POST tools/list, status: 404}
+  - {url: https://api.liquidagent.ai/sse, status: 404}
+  - {url: https://api.liquidagent.ai/.well-known/mcp.json, status: 404}
+  - {url: https://api.liquidagent.ai/mcp.json, status: 404}
+  - {url: https://api.liquidagent.ai/server.json, status: 404}
+  - {url: https://mcp.liquidagent.ai/, status: 'DNS NXDOMAIN'}
+  - {url: 'https://registry.npmjs.org/-/v1/search?text=liquidagent', result: 0 packages}
+  - {url: https://api.github.com/orgs/LiquidAgent/repos, result: '4 repos (.github, assets, x402 fork, liquidagentx402); no MCP server'}
+  note: >-
+    Neither the provider's llms.txt, agents.txt, agent card, ERC-8004 services list, README nor either SKILL.md
+    mentions MCP. The provider's chosen agent surfaces are raw HTTP + x402, an A2A card, and Agent Skills
+    (OpenClaw/ClawHub, skills.sh). No MCPServer pointer is wired for this candidate.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: none
+  verified: derived
+server:
+  name: liquidagent-ai
+  transport: null
+  url: null
+  candidate_auth_note: >-
+    If a server were built from this contract, free tools need no credentials; the three paid tools need an
+    x402-capable client that can sign an EIP-3009 USDC authorization on Base/Polygon (or a Solana USDC transfer).
+tool_count: 17
+tools:
+- name: get_guide
+  description: 'Plain-English guide to the whole lifecycle (start here)'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#get_v1_guide'
+  paid: 'false'
+- name: get_basket
+  description: 'The four tokenized-stock constituents with live prices, fees and min deposit'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#get_v1_basket'
+  paid: 'false'
+- name: get_vault
+  description: 'A vault''s NAV, holdings, current vs target weights and rebalance status'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#get_v1_vault_address'
+  paid: 'false'
+- name: get_balance
+  description: 'Every vault an address holds, its shares and USD value'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#get_v1_balance_agent'
+  paid: 'false'
+- name: get_quote
+  description: 'Preview shares and mint fee for a USDC amount'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#get_v1_quote'
+  paid: 'false'
+- name: build_create_vault_tx
+  description: 'Unsigned createVault() transaction'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#post_v1_create-vault'
+  paid: 'false'
+  returns: 'unsigned calldata'
+- name: build_set_weights_tx
+  description: 'Unsigned setTargetWeights(uint16[]) transaction'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#post_v1_set-weights'
+  paid: 'false'
+  returns: 'unsigned calldata'
+- name: build_buy_tx
+  description: 'EIP-2612 permit typed data then one unsigned depositWithPermit transaction (or legacy approve+deposit steps)'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#post_v1_buy'
+  paid: 'false'
+  returns: 'unsigned calldata'
+- name: build_redeem_tx
+  description: 'Unsigned redeem() or redeemInKind() transaction'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#post_v1_redeem'
+  paid: 'false'
+  returns: 'unsigned calldata'
+- name: build_rebalance_tx
+  description: 'Unsigned rebalance() transaction'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#post_v1_rebalance'
+  paid: 'false'
+  returns: 'unsigned calldata'
+- name: build_send_tx
+  description: 'Unsigned transfer(to,shares) of LQMAG4 basket shares'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#post_v1_send'
+  paid: 'false'
+  returns: 'unsigned calldata'
+- name: get_signals
+  description: 'Basket rebalancing signals and inverse-volatility suggested weights'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#getV1Signals'
+  paid: '0.04 USDC via x402'
+- name: publish_portfolio_page
+  description: 'Publish a shareable 24h portfolio page for a vault'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#postV1Publish'
+  paid: '0.25 USDC via x402'
+- name: get_gas_sponsor_info
+  description: 'Paymaster addresses, price rule and lanes (GET ?docs=1)'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#getV1Gas'
+  paid: 'false'
+- name: sponsor_gas
+  description: 'ERC-4337/ERC-7677 paymaster - quote, pay over x402, sign, submit (Base or Polygon)'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#postV1Gas'
+  paid: 'from 0.03 USDC via x402, dynamic'
+- name: get_solana_gas_sponsor_info
+  description: 'Solana fee-payer address, fee asset and flow'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#getV1GasSolana'
+  paid: 'false'
+- name: sponsor_gas_solana
+  description: 'Co-sign a Solana transaction with the sponsor as fee payer, paid in Solana USDC over x402'
+  source_operation: 'openapi/liquidagent-ai-openapi.yml#postV1GasSolana'
+  paid: 'from 0.03 USDC via x402, dynamic, max 2.00'

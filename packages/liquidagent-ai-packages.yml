@@ -1,0 +1,25 @@
+generated: '2026-09-19'
+method: searched
+source: registry searches and the provider's GitHub organization, 2026-09-19
+package_count: 0
+packages: []
+searched:
+- {registry: npm, query: 'https://registry.npmjs.org/-/v1/search?text=liquidagent', result: 0 packages, version: null, published: null}
+- {registry: npm, query: https://registry.npmjs.org/liquidagent, result: not found, version: null, published: null}
+- {registry: npm, query: https://registry.npmjs.org/@liquidagent%2fsdk, result: not found, version: null, published: null}
+- {registry: pypi, query: https://pypi.org/pypi/liquidagent/json, status: 404, version: null, published: null}
+- {registry: github-org, query: https://api.github.com/orgs/LiquidAgent, result: 'organization "Liquid Agent", 4 public repos: .github, assets, x402 (a fork of coinbase/x402, not an SDK), liquidagentx402 (examples + spec + skills, MIT, pushed 2026-09-04)'}
+- {registry: clawhub, query: https://clawhub.ai/skills/liquid-agent-stocks, status: 200, note: 'Agent Skill listing (clawhub install liquid-agent-stocks), not a client library'}
+- {registry: skills.sh, query: https://skills.sh/LiquidAgent/liquidagentx402, status: 404, note: 'README says "npx skills add LiquidAgent/liquidagentx402"; the skills.sh page for it 404s'}
+distributions:
+  note: >-
+    What the provider ships instead of an SDK: runnable examples (examples/buy.js with viem, examples/buy.py
+    with web3.py, examples/read.sh with curl, examples/gasless.js and examples/gasless-bring-your-own.js) and
+    two Agent Skills (skills/liquid-agent-stocks/SKILL.md, skills/liquid-gas-sponsor/SKILL.md) in
+    https://github.com/LiquidAgent/liquidagentx402, installable through ClawHub (clawhub install
+    liquid-agent-stocks / liquid-gas-sponsor) and skills.sh (npx skills add LiquidAgent/liquidagentx402).
+    These are catalogued in skills/ and as Examples on the API entry; they are not client libraries.
+note: >-
+  Liquid Agent publishes no client library, CLI or SDK in any registry searched; the documented way in is raw
+  HTTP against the OpenAPI, with the caller's own wallet library (viem, ethers, web3.py) doing the signing.
+  No SDKs pointer is emitted.

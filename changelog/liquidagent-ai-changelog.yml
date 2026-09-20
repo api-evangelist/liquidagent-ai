@@ -1,0 +1,27 @@
+generated: '2026-09-19'
+method: searched
+source: https://api.liquidagent.ai/openapi.json vs https://raw.githubusercontent.com/LiquidAgent/liquidagentx402/main/openapi.json
+dated_changelog_published: false
+searched:
+- {url: https://www.liquidagent.ai/changelog, status: 404}
+- {url: https://www.liquidagent.ai/blog, status: 404}
+- {url: https://api.liquidagent.ai/v1/guide, status: 200, note: no version or change section}
+- {url: https://github.com/LiquidAgent/liquidagentx402, status: 200, note: 'no CHANGELOG file in the tree (.gitignore, LICENSE, README.md, examples/, llms.txt, openapi.json, skills/); commit history not readable this run (GitHub API rate-limited)'}
+scheme:
+  version_format: info.version 1.0.0, unchanged
+  path_version: v1
+current_version: '1.0.0'
+note: >-
+  Liquid Agent publishes no dated changelog, release notes or versioning page. The one observable change record
+  is the drift between the OpenAPI copy committed to the examples repo and the live contract. No ChangeLog
+  pointer is emitted; this file records the absence and the observed drift.
+entries:
+- version: '1.0.0 (live contract, observed 2026-09-19)'
+  date: null
+  kind: additions
+  breaking: false
+  observed_against: examples repo openapi.json (repo last pushed 2026-09-04, 14 paths / 15 operations)
+  highlights:
+  - 'Added GET and POST /v1/gas/solana (getV1GasSolana, postV1GasSolana): a Solana gas-sponsor lane paid in Solana USDC over x402. Live contract now has 15 paths / 17 operations.'
+  - 'The repo README (2026-09-04) already describes the Polygon lane (chainId 137) on POST /v1/gas; the live x402-resources catalog lists eip155:137 in accepts[] for every paid resource.'
+  - 'Live operational data (GET /v1) reports monitoring since 2026-08-30 and 30,700 requests from 2,587 unique callers as of 2026-09-20, with /v1/gas requests rising from ~900/day to ~4,000-5,000/day on 2026-09-18 and 2026-09-19.'

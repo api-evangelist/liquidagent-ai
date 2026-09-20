@@ -1,0 +1,159 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://api.liquidagent.ai/v1/guide, https://api.liquidagent.ai/llms.txt, https://api.liquidagent.ai/v1/gas?docs=1,
+  the two provider SKILL.md files, and openapi/liquidagent-ai-openapi.yml (17 operations), read 2026-09-19; live
+  response headers observed on GET /v1/basket (200) and GET /v1/signals (402).
+description: >-
+  Cross-cutting semantics of the Liquid Agent API. The defining convention: the API never mutates state itself.
+  Every "write" is a transaction builder that returns unsigned calldata {to,data,value,chainId} (or EIP-712
+  typedData) which the caller signs and broadcasts; the state change happens on Base when the caller's
+  transaction mines. Reads are free and anonymous; three resources are paid per call over x402 v2.
+
+base_url: https://api.liquidagent.ai
+api_style: REST over HTTPS, JSON requests and responses, all paths under /v1/
+chain: Base mainnet (eip155:8453); gas sponsor also Polygon (eip155:137) and Solana mainnet
+
+authentication:
+  scheme: none for free operations; optional SIWX (EIP-4361 Sign-In with X) wallet identity in a SIGN-IN-WITH-X header; x402 payment (X-PAYMENT / PAYMENT-SIGNATURE header) for paid operations
+  api_keys: false
+  accounts: false
+  detail: authentication/liquidagent-ai-authentication.yml
+
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  applies_to: null
+  note: >-
+    No Idempotency-Key header or equivalent exists on any operation. The mutating surface is architecturally
+    different from a conventional API: POST /v1/create-vault, /v1/set-weights, /v1/buy, /v1/redeem, /v1/rebalance
+    and /v1/send are pure builders - repeating a POST returns the same calldata and moves no state, so a retried
+    API call cannot double-buy. Replay protection for the actual state change is the chain's transaction nonce
+    (a signed transaction broadcast twice is rejected). The gas sponsor accepts each sponsored operation once
+    ("only operations we sponsored are accepted, once each" - /v1/gas?docs=1) and a paid 402 quote that expires
+    unused earns one free re-quote within 30 minutes. None of this is an API-level idempotency contract, so the
+    verdict is none and no Idempotency pointer is emitted.
+
+reversibility:
+  api_is_read_only: false
+  grade: verified
+  grade_basis: >-
+    The principal write (buy) has a documented reversal (redeem to USDC or in-kind) AND a stated window
+    ("any block" - no time limit, un-trappable, works even when pricing is unavailable), so the buy->redeem pair
+    grades verified. Two writes are explicitly irreversible and say so.
+  surfaces:
+  - write: post_v1_buy (deposit USDC into a vault, mints LQMAG4 shares)
+    reversal: post_v1_redeem (burn shares for USDC, or redeemInKind for the raw stock tokens)
+    window: 'any block - "cash out any block", "exit in-kind or to USDC any block", "un-trappable"; inKind:true "works even if pricing is unavailable"'
+    docs: https://api.liquidagent.ai/llms.txt
+    grade: verified
+    note: The reversal is economic, not a refund - shares are redeemed at current NAV, so the USDC returned differs from the USDC deposited by market movement and the 0.20% mint fee already paid.
+  - write: post_v1_set-weights (change target allocation)
+    reversal: post_v1_set-weights again (any weightsBps summing to 10000)
+    window: 'any time; "each weight moves <=2000 bps per call" (/v1/guide step 5), so a large reversal may take several calls'
+    docs: https://api.liquidagent.ai/v1/guide
+    grade: verified
+  - write: post_v1_rebalance (trade the vault back to target weights)
+    reversal: none - trades are executed on-chain; a later set-weights + rebalance moves the vault again but does not undo the executed swaps
+    window: null
+    docs: https://api.liquidagent.ai/v1/guide
+    grade: irreversible
+  - write: post_v1_create-vault (mint a new ERC-4626 vault)
+    reversal: none - vaults cannot be deleted; the guide says create ONCE and reuse ("create-vault always mints a brand-new, separate vault")
+    window: null
+    docs: https://api.liquidagent.ai/v1/guide
+    grade: irreversible
+    note: Harmless to repeat economically (an empty vault holds nothing) but each call is a real on-chain deployment paid in the caller's gas.
+  - write: post_v1_send (transfer LQMAG4 shares to another wallet)
+    reversal: none - "irreversible once sent" (llms.txt), "Redeem and send are final once mined" (SKILL.md rules)
+    window: null
+    docs: https://api.liquidagent.ai/llms.txt
+    grade: irreversible
+  - write: post_v1_redeem
+    reversal: none - "final once mined"; re-entering means a new buy at current NAV with a new 0.20% mint fee
+    window: null
+    docs: https://raw.githubusercontent.com/LiquidAgent/liquidagentx402/main/skills/liquid-agent-stocks/SKILL.md
+    grade: irreversible
+  - write: postV1Gas direct lane (EIP-7702 delegation of the sender EOA to Simple7702Account)
+    reversal: documented as reversible ("owner = you, reversible") - the wallet owner can re-delegate or clear the delegation
+    window: any time; no API operation performs the reversal
+    docs: https://api.liquidagent.ai/v1/gas?docs=1
+    grade: documented
+  - write: postV1Gas / postV1GasSolana payment (USDC paid over x402 for a sponsorship)
+    reversal: none for a used sponsorship; an UNUSED or reverted sponsorship earns one free re-quote for the same sender within 30 minutes (a credit, not a refund)
+    window: 30 minutes
+    docs: https://api.liquidagent.ai/v1/gas?docs=1
+    grade: documented
+  - write: postV1Publish (24-hour portfolio page)
+    reversal: none documented; the page "goes dormant when you stop" re-publishing, i.e. it expires by itself after 24h
+    window: 24 hours (natural expiry)
+    docs: https://api.liquidagent.ai/v1/guide
+    grade: documented
+
+dry_run:
+  supported: partial
+  mechanism: >-
+    GET /v1/quote?usdc= previews shares and fee before a buy; GET /v1/vault/{address} reports rebalanceNeeded before a rebalance;
+    the gas sponsor's 402 is an exact quote issued after a successful simulation ("issued only after a successful
+    simulation" for Solana; "we dry-run it and submit" for bring-your-own operations); pm_getPaymasterStubData is free.
+    There is no dry-run flag on the builders themselves - but a builder call is already side-effect free until the caller broadcasts.
+
+pagination:
+  style: none
+  note: No list endpoint pages; GET /v1/balance/{agent} returns every vault the address holds in one array.
+
+field_expansion:
+  supported: false
+
+metadata:
+  supported: false
+  note: postV1Publish accepts optional label and brand {name,color,iconUrl} for the published page only.
+
+request_tracing:
+  request_id_header: null
+  note: No request-id response header was observed; the NOT_FOUND JSON envelope carries error.requestId.
+
+versioning:
+  scheme: uri-path
+  current: v1
+  detail: lifecycle/liquidagent-ai-lifecycle.yml
+
+amounts_and_units:
+  usdc: USDC-6 integer strings (1000000 = $1.00) in every request and response
+  weights: weightsBps, four integers in constituent order NVDA, META, AAPL, GOOGL, summing to exactly 10000
+  addresses: 0x + 40 hex (pattern ^0x[a-fA-F0-9]{40}$ enforced on vault/agent parameters)
+  shares: LQMAG4 vault-share amounts as strings
+
+transaction_builder_contract:
+  shape: '{to, data, value, chainId}'
+  alternatives: '{typedData} (EIP-712 to sign off-chain) from POST /v1/buy with permit:true; {steps:[approve, deposit]} when permit is omitted'
+  signing: The server never signs and holds no key; sign with the wallet that owns the funds and broadcast via eth_sendRawTransaction to any Base RPC
+  gas: deposit/rebalance/redeem swap B20 precompile tokens and break naive gas estimation - pass an explicit gas limit of about 3,000,000
+  calldata_suffix: An ERC-8021 attribution suffix (Base Builder Code) is appended to data; contracts ignore it; sign it exactly as returned
+  docs: https://api.liquidagent.ai/v1/guide
+
+error_envelope:
+  media_type: application/json
+  validation: '{error: string}'
+  not_found: '{success:false, error:{code, message, requestId, help}}'
+  payment_required: x402 v2 PaymentRequired (body + PAYMENT-REQUIRED / X-PAYMENT-REQUIRED headers)
+  detail: errors/liquidagent-ai-problem-types.yml
+
+rate_limit_signaling:
+  headers: []
+  status_on_exhaustion: null
+  note: No rate limits are published and no RateLimit-* / X-RateLimit-* / Retry-After headers were observed. Detail in rate-limits/liquidagent-ai-rate-limits.yml.
+
+payment_signaling:
+  status: 402
+  headers: [PAYMENT-REQUIRED, X-PAYMENT-REQUIRED]
+  request_headers: [X-PAYMENT, PAYMENT-SIGNATURE]
+  catalog: https://api.liquidagent.ai/.well-known/x402-resources
+  detail: plans/liquidagent-ai-plans-pricing.yml
+
+cors:
+  access_control_allow_origin: '*'
+  note: Observed on every live response; the API is callable from a browser.
+
+security_headers_observed: [strict-transport-security max-age=31536000 includeSubDomains preload, content-security-policy, x-frame-options DENY, x-content-type-options nosniff, referrer-policy strict-origin-when-cross-origin, permissions-policy]

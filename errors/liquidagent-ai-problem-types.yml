@@ -1,0 +1,57 @@
+generated: '2026-09-19'
+method: searched
+format: custom-json
+rfc9457: false
+source: >-
+  Derived from the 4xx responses declared in openapi/liquidagent-ai-openapi.yml (17 operations: eleven declare
+  400, four declare 402, two declare only 200) and enriched from live unauthenticated responses observed
+  2026-09-19 (GET /v1/vault/notanaddress, GET /v1/quote, POST /v1/buy {}, GET /v1/nonexistent, GET /v1/signals,
+  POST /v1/gas) plus the 409 and free-re-quote behaviour documented at https://api.liquidagent.ai/v1/gas?docs=1.
+envelope:
+  media_type: application/json
+  validation_shape: '{ "error": string }'
+  validation_shape_note: >-
+    Declared for every 400 in the contract and observed live, e.g. {"error":"invalid vault address"}, {"error":"body: { vault, usdc, minShares?, permit?, owner? }"}. The message doubles as the remediation - it states the expected shape.
+  not_found_shape: '{ "success": false, "error": { "code": "NOT_FOUND", "message": "Endpoint not found", "requestId": string, "help": "The requested resource does not exist" } }'
+  not_found_shape_note: Observed on unknown routes (and /.well-known/* misses). Carries a requestId; the /v1/nonexistent route inside the v1 prefix returns the shorter {"error":"not found"}.
+  payment_required_shape: '{ "x402Version": 2, "error": "X-PAYMENT header is required", "resource": {url, description, mimeType, serviceName, tags, iconUrl}, "accepts": [{scheme, network, amount, maxAmountRequired, resource, asset, payTo, maxTimeoutSeconds, extra}], "extensions": {bazaar: {info, schema}} }'
+  payment_required_shape_note: The x402 v2 PaymentRequired document. The same JSON, base64-encoded, is also sent in the PAYMENT-REQUIRED and X-PAYMENT-REQUIRED response headers. It is a challenge, not a failure - retry the identical request with an X-PAYMENT (or PAYMENT-SIGNATURE) header carrying the signed authorization.
+  request_id: Present only in the NOT_FOUND envelope (error.requestId); no request-id response header was observed.
+problems:
+- status: 400
+  title: Validation error
+  media_type: application/json
+  schema: '{error: string}'
+  meaning: A path parameter, query parameter or JSON body failed validation - a non-0x40-hex address, a missing ?usdc=, a body missing required fields, weightsBps not summing to 10000.
+  remediation: The error string names the expected input (e.g. "pass ?usdc=<amount in USDC-6> (e.g. 2000000 = $2)"); fix the request and resend. Idempotent to retry.
+  source_operations: [get_v1_guide, get_v1_basket, get_v1_vault_address, get_v1_balance_agent, get_v1_quote, post_v1_create-vault, post_v1_set-weights, post_v1_buy, post_v1_redeem, post_v1_rebalance, post_v1_send]
+- status: 402
+  title: Payment required (x402 challenge)
+  media_type: application/json
+  schema: x402 v2 PaymentRequired
+  meaning: The resource is paid and the request carried no valid X-PAYMENT. accepts[] states the exact USDC amount (6-decimal integer string), network, asset, payTo and timeout. For the gas sponsor the 402 IS the quote for the submitted operation (valid 120 s per the contract; "valid 10 minutes" per /v1/gas?docs=1 - the provider's two statements disagree, recorded as such).
+  remediation: Sign an EIP-3009 USDC authorization (Base or Polygon) or a Solana USDC TransferChecked for exactly accepts[].amount and retry with X-PAYMENT. For ERC-7677 clients the 402 arrives as a JSON-RPC error {code:402, data:<PaymentRequired>} inside an HTTP 200; place the payment object in params[3].context.x402.
+  source_operations: [getV1Signals, postV1Publish, postV1Gas, postV1GasSolana]
+- status: 404
+  title: Endpoint not found
+  media_type: application/json
+  schema: '{success:false, error:{code:NOT_FOUND, message, requestId, help}} or {error: "not found"}'
+  meaning: Unknown route. Not declared in the contract; observed live.
+  remediation: Check the path against the OpenAPI; note GET /v1/published/{vault} is mentioned in /v1/guide but not in the contract.
+  source_operations: []
+- status: 409
+  title: Wallet already delegated elsewhere (gas sponsor direct lane)
+  media_type: application/json
+  meaning: The sender EOA is already EIP-7702-delegated to another implementation (MetaMask etc.), so the sponsor cannot delegate it to Simple7702Account.
+  remediation: >-
+    Add "redelegate": true to the same {sender, calls} body and sign the returned authorization (reversible, applied in the same transaction), or keep the delegation and use the bring-your-own-operation lane ({userOperation}).
+  source_operations: [postV1Gas]
+  source: https://api.liquidagent.ai/v1/gas?docs=1 (directLane.alreadyDelegatedElsewhere); not declared in the contract
+on_chain_failures:
+  note: >-
+    Most failure modes live after the API: the API returns unsigned calldata and the transaction can still revert
+    on Base (insufficient USDC, permit deadline passed, minShares/minUsdcOut slippage floor not met, gas estimation
+    failing on the B20 precompile swaps - pass gas ~3,000,000). These are not API errors and are not catalogued as
+    problem types; the guide and both SKILL.md files document the gas-limit workaround.
+gas_sponsor_credit:
+  note: If a paid sponsorship expires unused or the submitted operation reverts, the next quote for the same sender within 30 minutes is free (quote.priceUsd 0 with a credit field); one free re-quote per paid sponsorship (/v1/gas?docs=1 retries).

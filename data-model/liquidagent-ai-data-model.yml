@@ -1,0 +1,51 @@
+generated: '2026-09-19'
+method: derived
+source: >-
+  Derived from openapi/liquidagent-ai-openapi.yml (17 operations; the contract declares no components.schemas -
+  response shapes are stated in operation descriptions as {field,...} lists), the live JSON of GET /v1/basket,
+  /v1/quote, /v1/guide and /.well-known/x402-resources, and the on-chain addresses those documents publish.
+docs: https://api.liquidagent.ai/v1/guide
+notation: >-
+  Entities are keyed by Base (eip155:8453) addresses (0x + 40 hex) rather than provider-issued ids; the API is a
+  stateless view over on-chain state plus a few provider-side records (published pages, gas sponsorships).
+  Relationships use has_one / has_many / belongs_to with the referencing field in via.
+entities:
+- {name: BasketVaultFactory, address: '0x1B205660780CbC57849019Df2BA64B719b00AEA8', domain: protocol, description: The factory that mints vaults; returned as factory by GET /v1/basket.}
+- {name: Constituent, domain: protocol, description: 'One of the four tokenized stocks (NVDAc, METAc, AAPLc, GOOGLc - Coinbase B20 precompile tokens, 8 decimals) with live priceUsd; order is fixed NVDA, META, AAPL, GOOGL and indexes weightsBps.', fields: [symbol, name, address, decimals, priceUsdc, priceUsd]}
+- {name: Vault, domain: core, description: 'An ERC-4626 vault minted by createVault(); the unit of ownership. Has a strategist (its creator), an owner (the protocol Safe, for fees), NAV, target and current weightsBps, rebalanceNeeded, rebalanceBandBps, maxTvlUsdc, mintFeeBps.', key: vault address, operations: [post_v1_create-vault, get_v1_vault_address, post_v1_set-weights, post_v1_rebalance]}
+- {name: Agent, domain: core, description: 'A caller wallet address (EOA or smart account). Holds vaults and shares. Not registered anywhere - the API has no accounts.', key: address, operations: [get_v1_balance_agent]}
+- {name: Share, domain: core, description: 'LQMAG4 vault shares minted on deposit, burned on redeem, transferable by send. Held by any address, vault or no vault.', operations: [post_v1_buy, post_v1_redeem, post_v1_send]}
+- {name: Quote, domain: pricing, description: 'Preview of a buy: usdcIn, mintFeeUsdc, netUsdc (and shares/minShares slippage floor).', operations: [get_v1_quote]}
+- {name: UnsignedTransaction, domain: builder, description: 'The universal write output {to, data, value, chainId}; variants {typedData} (EIP-712) and {steps:[approve, deposit]}.', operations: [post_v1_create-vault, post_v1_set-weights, post_v1_buy, post_v1_redeem, post_v1_rebalance, post_v1_send]}
+- {name: Permit, domain: builder, description: 'EIP-2612 permit {deadline, signature} exchanged for a single depositWithPermit transaction.', operations: [post_v1_buy]}
+- {name: Signals, domain: analytics, description: 'Per-constituent returns, volatility, RSI, trend, relative strength; basketStats with a correlation matrix; riskParityWeightsBps / suggested weights; optional vault drift. Paid.', operations: [getV1Signals]}
+- {name: PublishedPage, domain: sharing, description: 'A 24-hour shareable page at /v/<slug> for one vault: {viewUrl, slug, expiresAt}; status at GET /v1/published/{vault} (guide only, not in the contract). Paid.', operations: [postV1Publish]}
+- {name: Sponsorship, domain: gas, description: 'A paid gas sponsorship: quote (402), then {userOperation, typedData, authorization?, validUntil}, then submission {txHash, success, actualGasCostEth}. EntryPoint v0.8, paymaster 0x9676897C3BF08977Cdbe78213F84e72A29b844eC.', operations: [getV1Gas, postV1Gas]}
+- {name: SolanaSponsorship, domain: gas, description: 'A Solana transaction co-signed by the sponsor fee payer after a USDC payment: {transaction, feePayer, priceUsd, lamports, feePaymentSig}.', operations: [getV1GasSolana, postV1GasSolana]}
+- {name: PaymentRequired, domain: payment, description: 'x402 v2 challenge {x402Version, resource, accepts[], extensions.bazaar}; the price list for every paid entity.', source: /.well-known/x402-resources}
+relationships:
+- {from: BasketVaultFactory, to: Vault, type: has_many, via: createVault()}
+- from: 'Vault'
+  to: 'Constituent'
+  type: 'has_many'
+  via: 'weightsBps[4] (index order NVDA, META, AAPL, GOOGL)'
+- {from: Vault, to: Agent, type: belongs_to, via: strategist (the creator)}
+- {from: Agent, to: Vault, type: has_many, via: 'vaults[] in GET /v1/balance/{agent}'}
+- from: 'Agent'
+  to: 'Share'
+  type: 'has_many'
+  via: 'vaults[].shares'
+- {from: Share, to: Vault, type: belongs_to, via: vault}
+- {from: Quote, to: Vault, type: belongs_to, via: 'implicit (equal-weight deposit across constituents)'}
+- {from: UnsignedTransaction, to: Vault, type: belongs_to, via: 'to (the vault or factory address)'}
+- {from: Permit, to: Agent, type: belongs_to, via: owner}
+- {from: Signals, to: Vault, type: belongs_to, via: '?vault= (optional; adds currentWeightsBps and drift)'}
+- {from: PublishedPage, to: Vault, type: belongs_to, via: vault}
+- {from: Sponsorship, to: Agent, type: belongs_to, via: sender / userOperation.sender}
+- {from: PaymentRequired, to: Signals, type: has_one, via: 'resource https://api.liquidagent.ai/v1/signals'}
+- {from: PaymentRequired, to: PublishedPage, type: has_one, via: 'resource https://api.liquidagent.ai/v1/publish'}
+- {from: PaymentRequired, to: Sponsorship, type: has_one, via: 'resource https://api.liquidagent.ai/v1/gas'}
+id_conventions:
+  addresses: 0x + 40 hex, validated by pattern ^0x[a-fA-F0-9]{40}$ on every vault and agent parameter
+  amounts: USDC-6 integer strings; shares as strings; weights as four integers summing to 10000
+  on_chain_identity: 'erc8004 agentId 74094 on registry eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 (the provider itself, not callers)'

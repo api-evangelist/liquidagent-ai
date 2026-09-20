@@ -1,0 +1,62 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for the Liquid Agent OpenAPI
+  version: 2026.09.19
+  x-generated: '2026-09-19'
+  x-method: generated
+  x-source: openapi/liquidagent-ai-openapi.yml (verbatim conversion of https://api.liquidagent.ai/openapi.json)
+  description: >-
+    Non-destructive enhancements recorded by API Evangelist against the provider's contract - observed
+    response envelopes the contract omits, the undocumented published-page status route, and cross-links to
+    the catalogued conventions, errors, plans and skills. Applying this overlay never changes the provider's
+    own content; the original spec stays untouched under openapi/.
+extends: ./liquidagent-ai-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist:
+      profile: https://apis.io/providers/liquidagent-ai/
+      conventions: ../conventions/liquidagent-ai-conventions.yml
+      errors: ../errors/liquidagent-ai-problem-types.yml
+      plans: ../plans/liquidagent-ai-plans-pricing.yml
+      skills: ../skills/_index.yml
+      agent_card: ../a2a/liquidagent-ai-a2a.yml
+      observed: '2026-09-19'
+- target: $.servers[0]
+  update:
+    description: Production API host on Base mainnet (eip155:8453); the only host, no sandbox or testnet is published
+- target: $.tags
+  update:
+  - name: Liquid Agent
+    description: All 17 operations carry this single tag in the provider's contract; reads are free, six POSTs are transaction builders, four operations are paid over x402
+- target: $.paths['/v1/vault/{address}'].get.responses
+  update:
+    '404':
+      description: Observed (not declared by the provider) - unknown route inside /v1 returns {"error":"not found"}
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: {type: string}
+- target: $.paths['/v1/signals'].get.responses['402']
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        description: Observed - base64 of the x402 v2 PaymentRequired JSON body
+        schema: {type: string}
+      X-PAYMENT-REQUIRED:
+        description: Observed - duplicate of PAYMENT-REQUIRED for older x402 clients
+        schema: {type: string}
+- target: $.paths['/v1/gas'].post
+  update:
+    x-observed-responses:
+      '409': Sender EOA already EIP-7702-delegated to another implementation; add redelegate:true or use the bring-your-own-operation lane (documented at GET /v1/gas?docs=1, not declared here)
+- target: $.paths['/v1/publish'].post
+  update:
+    x-related-undocumented-route: 'GET /v1/published/{vault} - status of a published page, named in /v1/guide but absent from this contract'
+- target: $.components
+  update:
+    x-observed-error-envelopes:
+      validation: '{"error": string}'
+      not_found: '{"success": false, "error": {"code": "NOT_FOUND", "message": string, "requestId": string, "help": string}}'

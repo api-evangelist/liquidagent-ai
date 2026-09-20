@@ -1,0 +1,16 @@
+# agents.txt — Liquid Agent (tokenized-stock index for AI agents on Base; gas sponsor on Base + Polygon, paid in USDC over x402)
+# Standard: https://agents-txt.com
+# Free reads; transactions return unsigned calldata the agent signs (self-custody). Name & skills: see the A2A card.
+
+A2A: https://api.liquidagent.ai/.well-known/agent-card.json
+
+# experimental (x-): additional open discovery surfaces for this agent
+x-x402: https://api.liquidagent.ai/.well-known/x402
+x-openapi: https://api.liquidagent.ai/openapi.json
+x-guide: https://api.liquidagent.ai/v1/guide
+x-source: https://github.com/LiquidAgent/liquidagentx402
+x-erc8004: https://api.liquidagent.ai/.well-known/erc8004.json
+x-gas-sponsor: https://api.liquidagent.ai/v1/gas
+x-gas-sponsor-solana: https://api.liquidagent.ai/v1/gas/solana
+x-gas-sponsor-lanes: direct {sender,calls[,redelegate:true]} | bring-your-own {userOperation} (any EntryPoint v0.8 account) | erc7677 JSON-RPC | solana {transaction} at /v1/gas/solana; details GET https://api.liquidagent.ai/v1/gas?docs=1 (bare GET = 402 quote); chains eip155:8453 + eip155:137 (chainId: 137 in the body); fee in USDC on Base or Polygon
+x-identity: eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/74094

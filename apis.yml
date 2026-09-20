@@ -1,18 +1,110 @@
 aid: liquidagent-ai
 name: Liquid Agent
-description: 'Liquid Agent is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Liquid Agent is an agent-native money layer on Base: a USDC account for people (yield, payments and
+  stocks from one balance, through the app) and, for AI agents, a permissionless HTTP API at
+  api.liquidagent.ai that mints a self-custodied ERC-4626 vault holding Coinbase's tokenized NVDA, META,
+  AAPL and GOOGL, buys in from $1, sets custom weights, rebalances and exits to USDC or in-kind any block.
+  Reads are free and need no key; every write returns unsigned calldata the agent signs with its own
+  wallet. Three paid surfaces settle per call in USDC over x402 v2: basket rebalancing signals ($0.04), a
+  shareable portfolio page ($0.25) and an ERC-4337 / ERC-7677 gas sponsor (from $0.03) on Base, Polygon
+  and Solana. The contract is a 17-operation OpenAPI 3.1.0 at api.liquidagent.ai/openapi.json, with an
+  A2A agent card, llms.txt, agents.txt, an x402 resource catalog, an ERC-8004 on-chain identity and two
+  provider-authored Agent Skills in the open-source examples repo.
 url: https://raw.githubusercontent.com/api-evangelist/liquidagent-ai/refs/heads/main/apis.yml
+image: https://liquidagent.ai/icon.png
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-09-19 (local-v3; was a2a-registry harvest stub)
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
-- Company
-apis: []
+- Tokenized Stocks
+- DeFi
+- Investing
+- Agentic Commerce
+- x402
+- Stablecoins
+- Account Abstraction
+- Gas Sponsorship
+- Base
+- Solana
+- AI Agents
+- agent-native
+- A2A
+- Portfolio Management
+- Market Data
+apis:
+- aid: liquidagent-ai:liquid-agent-api
+  name: Liquid Agent Tokenized Stock Index and Gas Sponsor API
+  description: >-
+    Agent-facing REST API on Base (eip155:8453). Free reads (basket constituents and live prices, vault
+    NAV and weights, an address's vaults and shares, a purchase quote, the plain-English guide) and free
+    transaction builders (create-vault, set-weights, buy via EIP-2612 permit, rebalance, redeem to USDC
+    or in-kind, send shares) that return unsigned {to,data,value,chainId} for the caller to sign and
+    broadcast. Paid over x402 v2 (exact scheme, EIP-3009 USDC on Base or Polygon, Solana USDC for the
+    Solana lane): GET /v1/signals ($0.04), POST /v1/publish ($0.25), and the gas sponsor at POST /v1/gas
+    and POST /v1/gas/solana (from $0.03, dynamic). No API key, no account; SIWX (EIP-4361) wallet identity
+    is optional on free calls.
+  image: https://liquidagent.ai/icon.png
+  humanURL: https://api.liquidagent.ai/v1/guide
+  baseURL: https://api.liquidagent.ai
+  tags:
+  - Tokenized Stocks
+  - DeFi
+  - x402
+  - Gas Sponsorship
+  - Account Abstraction
+  - Market Data
+  properties:
+  - type: OpenAPI
+    url: openapi/liquidagent-ai-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted)
+    url: https://api.liquidagent.ai/openapi.json
+  - type: Documentation
+    url: https://api.liquidagent.ai/v1/guide
+  - type: APIReference
+    url: https://api.liquidagent.ai/openapi.json
+  - type: GettingStarted
+    name: Quickstart (README, create -> buy -> rebalance -> exit)
+    url: https://github.com/LiquidAgent/liquidagentx402#readme
+  - type: Examples
+    name: Runnable code examples (JavaScript/viem, Python/web3, curl)
+    url: https://github.com/LiquidAgent/liquidagentx402/tree/main/examples
+  - type: LLMsTxt
+    url: llms/liquidagent-ai-llms.txt
+  - type: LLMsTxt
+    name: llms.txt (provider-hosted)
+    url: https://api.liquidagent.ai/llms.txt
+  - type: Authentication
+    url: authentication/liquidagent-ai-authentication.yml
+  - type: Conventions
+    url: conventions/liquidagent-ai-conventions.yml
+  - type: ErrorCatalog
+    url: errors/liquidagent-ai-problem-types.yml
+  - type: DataModel
+    url: data-model/liquidagent-ai-data-model.yml
+  - type: Overlay
+    url: overlays/liquidagent-ai-openapi-overlay.yaml
+  - type: Plans
+    url: plans/liquidagent-ai-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/liquidagent-ai-rate-limits.yml
+  - type: Conformance
+    url: conformance/liquidagent-ai-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/liquidagent-ai-lifecycle.yml
+  - type: AgentSkill
+    name: liquid-agent-stocks (provider-published SKILL.md)
+    url: skills/liquidagent-ai-liquid-agent-stocks.md
+  - type: AgentSkill
+    name: liquid-gas-sponsor (provider-published SKILL.md)
+    url: skills/liquidagent-ai-liquid-gas-sponsor.md
+  - type: AgenticAccess
+    url: agentic-access/liquidagent-ai-agentic-access.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -21,3 +113,41 @@ maintainers:
 common:
 - type: Website
   url: https://liquidagent.ai/
+- type: GitHubOrganization
+  url: https://github.com/LiquidAgent
+- type: SourceCode
+  name: liquidagentx402 (open-source examples, OpenAPI, llms.txt and Agent Skills, MIT)
+  url: https://github.com/LiquidAgent/liquidagentx402
+- type: Twitter
+  name: X @LiquidAgentAI (declared on the GitHub organization profile)
+  url: https://x.com/LiquidAgentAI
+- type: StatusPage
+  name: Self-measured status (uptime, schema validity, latency; JSON)
+  url: https://api.liquidagent.ai/v1/status
+- type: Pricing
+  name: x402 resource catalog (machine-readable per-call prices)
+  url: https://api.liquidagent.ai/.well-known/x402-resources
+- type: Plans
+  url: plans/liquidagent-ai-plans-pricing.yml
+- type: AgentCard
+  url: a2a/liquidagent-ai-a2a.yml
+- type: AgentCard
+  name: A2A agent card (provider-hosted)
+  url: https://api.liquidagent.ai/.well-known/agent-card.json
+- type: WellKnown
+  url: well-known/liquidagent-ai-well-known.yml
+- type: LLMsTxt
+  url: llms/liquidagent-ai-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Packages
+  url: packages/liquidagent-ai-packages.yml
+- type: DomainSecurity
+  url: security/liquidagent-ai-domain-security.yml
+- type: X-RegulatoryPosture
+  url: regulatory/liquidagent-ai-regulatory-posture.yml
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 28
+  pass: local-v3

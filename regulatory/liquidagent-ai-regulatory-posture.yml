@@ -1,0 +1,29 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: >-
+  Harvested artifacts from this run (well-known/, security/, lifecycle/, conformance/), then live probes of the
+  conventional paths on www.liquidagent.ai and api.liquidagent.ai, then the provider's documentation surface
+  (/v1/guide, llms.txt, README, SKILL.md), 2026-09-19.
+signals: {}
+probed:
+- {url: https://www.liquidagent.ai/privacy, status: 404}
+- {url: https://www.liquidagent.ai/terms, status: 404}
+- {url: https://www.liquidagent.ai/security, status: 404}
+- {url: https://www.liquidagent.ai/accessibility, status: 404}
+- {url: https://www.liquidagent.ai/legal/subprocessors, status: 404}
+- {url: https://www.liquidagent.ai/legal/dpa, status: 404}
+- {url: https://www.liquidagent.ai/privacy/requests, status: 404}
+- {url: https://www.liquidagent.ai/transparency, status: 404}
+- {url: https://www.liquidagent.ai/trust, status: 404}
+- {url: https://www.liquidagent.ai/ai, status: 404}
+- {url: https://api.liquidagent.ai/.well-known/security.txt, status: 404}
+- {url: https://docs.liquidagent.ai/, status: 404, note: dead Vercel deployment, expired certificate}
+note: >-
+  No published signal in any of the fourteen categories. The provider publishes no privacy policy, terms,
+  security page, accessibility statement, subprocessor list, DPA, data-residency statement or transparency report
+  on any host reachable anonymously; the website is a JavaScript shell with no legal links and the API host's
+  documentation is entirely about the contract. The only stated data-handling posture is architectural and
+  appears in /v1/guide and llms.txt: the server holds no key, creates no account and stores nothing about the
+  caller ("no account, no API key, no allowlist"). That is not a regulatory signal in this vocabulary and is
+  not recorded as one. An empty signals map is the measurement.

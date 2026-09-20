@@ -1,0 +1,124 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  openapi/liquidagent-ai-openapi.yml (securitySchemes and per-operation x-payment blocks), live 402 responses
+  from https://api.liquidagent.ai/v1/signals and /v1/gas, https://api.liquidagent.ai/.well-known/x402-resources,
+  /.well-known/erc8004.json, /.well-known/agent-card.json, /v1/guide and /v1/gas?docs=1, all fetched 2026-09-19.
+standards:
+- id: x402
+  conforms: true
+  domain_standard: true
+  evidence: >-
+    DECLARED IN THE CONTRACT: components.securitySchemes.x402 is {type: http, scheme: x402}; getV1Signals,
+    postV1Publish, postV1Gas and postV1GasSolana carry x-payment / x-payment-info blocks with scheme exact,
+    network eip155:8453 (and eip155:137 / solana), asset, payTo. OBSERVED LIVE: an unpaid GET /v1/signals returns
+    HTTP 402 with a JSON body {x402Version: 2, error, resource, accepts[{scheme: exact, network, amount,
+    maxAmountRequired, asset, payTo, maxTimeoutSeconds}], extensions.bazaar} and the same document base64 in
+    both PAYMENT-REQUIRED and X-PAYMENT-REQUIRED headers. /.well-known/x402-resources publishes the v2 resource
+    catalog. The contract, not a marketing page, declares the standard.
+- id: eip-3009
+  conforms: true
+  evidence: >-
+    Payment authorization is EIP-3009 transferWithAuthorization on USDC (securitySchemes.x402.description; accepts[].extra {name USD Coin, version 2, verifyingContract}).
+- id: siwx-eip-4361
+  conforms: true
+  evidence: >-
+    components.securitySchemes.siwx is an apiKey scheme in header SIGN-IN-WITH-X described as "Sign-In with X wallet identity (EIP-4361). Optional; no payment", applied to the 11 free operations.
+- id: erc-4626
+  conforms: true
+  domain_standard: true
+  evidence: >-
+    Vaults minted by post_v1_create-vault are ERC-4626 tokenized vaults (agent card skill create-vault "Mint your own isolated ERC-4626 vault"; llms.txt; README). Shares are the LQMAG4 token transferred by post_v1_send.
+- id: eip-2612
+  conforms: true
+  evidence: >-
+    post_v1_buy builds a depositWithPermit transaction from an EIP-2612 permit; the first call returns EIP-712 typedData to sign off-chain (operation description; /v1/guide step 6).
+- id: eip-712
+  conforms: true
+  evidence: >-
+    post_v1_buy (permit typedData) and postV1Gas (userOperation typedData) return EIP-712 typed data for eth_signTypedData_v4 (operation descriptions; /v1/gas?docs=1).
+- id: erc-4337
+  conforms: true
+  domain_standard: true
+  evidence: >-
+    postV1Gas is an ERC-4337 paymaster for EntryPoint v0.8 (0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108), paymaster 0x9676897C3BF08977Cdbe78213F84e72A29b844eC (GET /v1/gas?docs=1 entryPoints/paymasters; operation description).
+- id: erc-7677
+  conforms: true
+  domain_standard: true
+  evidence: >-
+    postV1Gas requestBody oneOf[0] is the ERC-7677 JSON-RPC shape with method enum pm_getPaymasterStubData / pm_getPaymasterData / pm_supportedEntryPoints; an unpaid pm_getPaymasterData returns JSON-RPC error {code 402, data x402 PaymentRequired}.
+- id: eip-7702
+  conforms: true
+  evidence: >-
+    The direct lane delegates a plain EOA to Simple7702Account (0xe6Cae83BdE06E4c305530e199D7217f42808555B) via an EIP-7702 authorization the caller signs; redelegate:true re-points an already-delegated wallet (postV1Gas description; /v1/gas?docs=1 directLane).
+- id: erc-8004
+  conforms: true
+  domain_standard: true
+  evidence: >-
+    /.well-known/erc8004.json is a registration-v1 document (type https://eips.ethereum.org/EIPS/eip-8004#registration-v1) declaring agentId 74094 on registry eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432; /v1/guide addresses.onchainIdentity repeats it.
+- id: erc-8021
+  conforms: true
+  evidence: >-
+    Every returned calldata ends with an ERC-8021 attribution suffix (Base Builder Code) that contracts ignore (/v1/guide signing.how).
+- id: a2a-agent-card
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json is served and parses, but lacks protocolVersion and any transport declaration and points url at the REST root; graded flavored against A2A 1.0.0 in a2a/liquidagent-ai-a2a.yml.
+- id: llms-txt
+  conforms: true
+  evidence: >-
+    https://api.liquidagent.ai/llms.txt (200, text/plain) in llms.txt format; saved verbatim to llms/.
+- id: agents-txt
+  conforms: true
+  evidence: >-
+    https://api.liquidagent.ai/agents.txt (200) declares the A2A card plus x- extension lines per https://agents-txt.com.
+- id: openapi-3.1
+  conforms: true
+  evidence: >-
+    https://api.liquidagent.ai/openapi.json is openapi 3.1.0 with 15 paths / 17 operations, every operation carrying operationId, summary, description, tags and a 200 plus 400 or 402 response.
+- id: oauth2
+  conforms: false
+  evidence: >-
+    No oauth2 securityScheme; /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource 404 on every host.
+- id: oidc-discovery
+  conforms: false
+  evidence: >-
+    /.well-known/openid-configuration 404 on every host.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: >-
+    /.well-known/security.txt 404 on api.liquidagent.ai, liquidagent.ai and www.liquidagent.ai.
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: >-
+    /.well-known/api-catalog 404 on every host.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors are application/json; the contract declares 400 as {error: string} and the live 404 envelope is {success:false, error:{code,message,requestId,help}}. No application/problem+json anywhere. See errors/liquidagent-ai-problem-types.yml.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: >-
+    No Deprecation/Sunset headers, no deprecation policy, no deprecated operations.
+- id: rfc6585-rate-limit-signaling
+  conforms: false
+  evidence: >-
+    No 429 declared and no RateLimit-*/X-RateLimit-* headers observed on live 200/402 responses. See rate-limits/liquidagent-ai-rate-limits.yml.
+- id: mcp
+  conforms: false
+  evidence: >-
+    No MCP server (POST /mcp 404, mcp.liquidagent.ai NXDOMAIN, no package); see mcp/liquidagent-ai-mcp.yml.
+- id: apis-json
+  conforms: false
+  evidence: >-
+    /apis.json, /apis.yml and /.well-known/apis.json 404 on every host.
+domain_standard_signature:
+  note: >-
+    The contract itself declares its market's standards rather than a prose page claiming them: the x402
+    securityScheme and per-operation x-payment blocks (agentic commerce), the ERC-7677 JSON-RPC requestBody
+    shape and EntryPoint v0.8 paymaster (account abstraction), ERC-4626 vault semantics in the operation
+    descriptions (DeFi vaults) and the ERC-8004 registration file (on-chain agent identity). None of these
+    appears in a Kin Score regime standards[] list today; recorded reward-only.
+compliance_program:
+  published: false
+  note: No SOC 2 / ISO 27001 / audit or trust page was found on any host; no Compliance pointer is emitted.

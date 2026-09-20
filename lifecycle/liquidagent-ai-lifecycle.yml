@@ -1,0 +1,58 @@
+generated: '2026-09-19'
+method: searched
+source: https://api.liquidagent.ai/v1/status + https://api.liquidagent.ai/openapi.json + https://github.com/LiquidAgent/liquidagentx402 (searched 2026-09-19)
+versioning:
+  scheme: uri-path
+  current: v1
+  info_version: 1.0.0
+  notes: >-
+    Every operation is under /v1/. The contract's info.version is 1.0.0. No versioning or compatibility policy is
+    published anywhere found (guide, README, llms.txt, agents.txt), and there is no Stripe-style version header.
+changelog:
+  url: null
+  artifact: changelog/liquidagent-ai-changelog.yml
+  notes: >-
+    No dated changelog page exists. The only observable change record is the difference between the copy of
+    openapi.json committed to the examples repo (pushed 2026-09-04, 14 paths) and the live contract (15 paths -
+    /v1/gas/solana added). Detail in changelog/liquidagent-ai-changelog.yml. No ChangeLog pointer is emitted.
+status_page:
+  url: https://api.liquidagent.ai/v1/status
+  provider: self-hosted (provider-measured)
+  machine_readable_api: true
+  format: JSON {service, overall, lastUpdated, monitoringSince, intervalSeconds, services[{name, status, uptimePct, schemaPct, p50ms, history[{date, uptime}]}]}
+  observed:
+    checked: '2026-09-19'
+    http_status: 200
+    overall: Operational
+    monitoring_since: '2026-08-30'
+    interval_seconds: 60
+    uptime_pct: 98
+    schema_pct: 97.6
+    p50_ms: 2
+  notes: >-
+    Linked from llms.txt ("System status: self-measured uptime, schema validity, and latency") and the README.
+    It is a JSON endpoint rather than a hosted status page (no Statuspage/Better Stack/Instatus), measured by the
+    provider itself every 60 s; the 90-day history array is null before 2026-08-30. GET /v1/health also answers
+    {status: ok, timestamp}. GET / and GET /v1 carry live usage counters (totalRequests, uniqueCallers, byClient
+    agent/browser/crawler/other, topPaths, a daily series and a 24h latency window).
+deprecation:
+  policy_documented: false
+  policy_url: null
+  sunset_header: false
+  deprecated_operations: []
+  notes: >-
+    No deprecation or sunset policy is published and no operation in the live contract carries deprecated: true. No Deprecation pointer is emitted.
+sla:
+  url: null
+  uptime_target: null
+  notes: No SLA is published; the status endpoint reports measured uptime (98%) without a commitment.
+terms:
+  url: null
+  notes: >-
+    No terms of service or privacy policy page was found: www.liquidagent.ai/terms and /privacy 404, the SPA
+    shell carries no legal links, and the API host publishes none. The examples repo is MIT-licensed.
+observed_age:
+  api_monitoring_since: '2026-08-30'
+  examples_repo_created: '2026-08-31'
+  github_org_created: '2025-03-14'
+  docs_host: docs.liquidagent.ai is a dead Vercel deployment with a certificate that expired 2026-03-07 - the pre-agent-API docs surface was abandoned; the API host itself is now the documentation.

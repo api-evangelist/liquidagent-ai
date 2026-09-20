@@ -1,0 +1,47 @@
+generated: '2026-09-19'
+method: probed
+source: live response headers on https://api.liquidagent.ai/v1/basket (200) and /v1/signals (402), 2026-09-19
+docs:
+- https://api.liquidagent.ai/v1/guide
+- https://api.liquidagent.ai/openapi.json
+- https://api.liquidagent.ai/v1/gas?docs=1
+limit_count: 0
+summary: >-
+  Liquid Agent publishes no request-rate limit. The contract declares no 429, the guide, llms.txt and both SKILL.md
+  files never mention rate limiting, and no RateLimit-*, X-RateLimit-* or Retry-After header appears on live
+  responses (observed headers: server nginx, etag, access-control-allow-origin, HSTS, CSP, x-frame-options,
+  x-content-type-options, referrer-policy, permissions-policy). The metering that does exist is per-call USDC
+  pricing over x402 (see plans/) and on-chain caps on the vault contracts. An honest zero.
+rate_limits: []
+headers: []
+exhaustion:
+  status: null
+  note: Not documented and not observed.
+size_and_time_limits:
+- name: 'Minimum deposit'
+  limit: '$1.00 (minDepositUsdc 1000000)'
+  source: 'GET /v1/basket'
+- name: 'Default max TVL per vault'
+  limit: '$25,000 (defaultMaxTvlUsdc 25000000000)'
+  source: 'GET /v1/basket'
+- name: 'Weight change per set-weights call'
+  limit: '<= 2000 bps per constituent per call'
+  source: '/v1/guide step 5'
+- name: 'Gas-sponsor quote validity'
+  limit: '120 s (postV1Gas description) / 10 minutes (/v1/gas?docs=1) - the two provider statements disagree'
+  source: 'openapi + gas docs'
+- name: 'Gas-sponsor free re-quote window'
+  limit: '30 minutes, one per paid sponsorship'
+  source: '/v1/gas?docs=1'
+- name: 'Solana sponsorship price cap'
+  limit: '$2.00 per operation'
+  source: 'postV1GasSolana description'
+- name: 'x402 payment authorization timeout'
+  limit: 'maxTimeoutSeconds 60'
+  source: '/.well-known/x402-resources'
+- name: 'Published portfolio page lifetime'
+  limit: '24 hours per publish'
+  source: '/v1/guide'
+- name: 'Recommended gas limit for deposit/rebalance/redeem'
+  limit: '~3,000,000 (estimation fails on B20 precompile swaps)'
+  source: '/v1/guide signing.gas'

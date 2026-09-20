@@ -1,0 +1,62 @@
+generated: '2026-09-19'
+method: probed
+source: https://api.liquidagent.ai/.well-known/x402-resources
+docs:
+- https://api.liquidagent.ai/v1/basket
+- https://api.liquidagent.ai/v1/guide
+- https://api.liquidagent.ai/v1/gas?docs=1
+- https://api.liquidagent.ai/llms.txt
+plan_count: 4
+currency: USDC
+model: >-
+  No tiers, no subscription, no account, no card. Reads and transaction builders are free; three resources are
+  paid per call in USDC over x402 v2 (exact scheme) on Base (eip155:8453) or Polygon (eip155:137), and the Solana
+  gas lane in Solana USDC. Protocol fees on the vault itself are charged on-chain, separately from the API.
+summary: >-
+  Prices below are read from the machine-readable x402 resource catalog (accepts[].amount in USDC-6) and the live
+  402 challenges on 2026-09-19, cross-checked against the contract's x-payment blocks and llms.txt. Protocol fees
+  come from GET /v1/basket (fees.mintBps 20, fees.mgmtBpsPerYear 90, fees.perfBps 0, minDepositUsdc 1000000).
+plans:
+- id: free
+  name: Free reads and transaction builders
+  price: 0
+  currency: USDC
+  period: per call
+  included: GET /v1/guide, /v1/basket, /v1/vault/{address}, /v1/balance/{agent}, /v1/quote, /v1/gas (docs), /v1/gas/solana (info); POST /v1/create-vault, /v1/set-weights, /v1/buy, /v1/redeem, /v1/rebalance, /v1/send
+  limits: ['no API key, no account, no published request cap', 'the caller pays its own Base gas to broadcast (or uses the gas sponsor)']
+- id: signals
+  name: Basket signals (GET /v1/signals)
+  price: 0.04
+  currency: USDC
+  period: per call
+  amount_usdc6: '40000'
+  networks: [eip155:8453, eip155:137]
+  limits: ['maxTimeoutSeconds 60 on the payment authorization']
+- id: publish
+  name: Shareable portfolio page (POST /v1/publish)
+  price: 0.25
+  currency: USDC
+  period: per publish (page lives 24 hours; re-publish to extend)
+  amount_usdc6: '250000'
+  networks: [eip155:8453, eip155:137]
+- id: gas-sponsor
+  name: Gas sponsor (POST /v1/gas, POST /v1/gas/solana)
+  price: 0.03
+  price_note: 'floor; dynamic = max($0.03, 1.3 x the operation''s gas cap) on Base/Polygon; (network fee + priority fee + rent) x 1.3 on Solana, max $2.00'
+  currency: USDC
+  period: per sponsored operation
+  amount_usdc6: '30000'
+  networks: [eip155:8453, eip155:137, 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']
+  limits: ['the 402 quote is the exact price and is locked by signature', 'quote validity 120 s (contract) / 10 minutes (gas docs)', 'one free re-quote within 30 minutes if a paid sponsorship expires unused or reverts', 'pm_getPaymasterStubData is free']
+protocol_fees:
+  note: Charged on-chain by the vault contracts, not by the API; settle to feeSink 0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90.
+  mint_fee: 0.20% (20 bps) on each buy
+  management_fee: 0.90% per year (90 bps)
+  performance_fee: 0
+  min_deposit: $1.00 (1000000 USDC-6)
+  default_max_tvl_per_vault: $25,000 (defaultMaxTvlUsdc 25000000000)
+payment:
+  protocol: x402 v2, exact scheme
+  assets: {base: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', polygon: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', solana: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v}
+  payTo: {evm: '0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90', solana: BBcAL97dyJPGmsjQ7pPxCdUsFk1wgZ6jqYQ4DFvCVHkn}
+  facilitator: PayAI (named in the gas-sponsor SKILL.md)
