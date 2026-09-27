@@ -12,6 +12,22 @@ description: >-
   A2A agent card, llms.txt, agents.txt, an x402 resource catalog, an ERC-8004 on-chain identity and two
   provider-authored Agent Skills in the open-source examples repo.
 url: https://raw.githubusercontent.com/api-evangelist/liquidagent-ai/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  license_evidence:
+    not_product:
+    - liquidagent/liquidagentx402
+  open_source: unknown
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: low
+  source:
+  - openapi
+  - pricing
+  - repository-not-product
+  generated: '2026-09-25'
+  method: derived
 image: https://liquidagent.ai/icon.png
 x-type: company
 x-source: harvest:a2a-registry
@@ -32,9 +48,9 @@ tags:
 - Base
 - Solana
 - AI Agents
-- agent-native
+- Agent-Native
 - A2A
-- Portfolio-Management
+- Portfolio Management
 - Market Data
 tags_raw:
 - Tokenized Stocks
@@ -52,48 +68,29 @@ tags_raw:
 - A2A
 - Portfolio Management
 - Market Data
+- Portfolio-Management
 apis:
-- aid: liquidagent-ai:liquid-agent-api
-  name: Liquid Agent Tokenized Stock Index and Gas Sponsor API
-  description: >-
-    Agent-facing REST API on Base (eip155:8453). Free reads (basket constituents and live prices, vault
-    NAV and weights, an address's vaults and shares, a purchase quote, the plain-English guide) and free
-    transaction builders (create-vault, set-weights, buy via EIP-2612 permit, rebalance, redeem to USDC
-    or in-kind, send shares) that return unsigned {to,data,value,chainId} for the caller to sign and
-    broadcast. Paid over x402 v2 (exact scheme, EIP-3009 USDC on Base or Polygon, Solana USDC for the
-    Solana lane): GET /v1/signals ($0.04), POST /v1/publish ($0.25), and the gas sponsor at POST /v1/gas
-    and POST /v1/gas/solana (from $0.03, dynamic). No API key, no account; SIWX (EIP-4361) wallet identity
-    is optional on free calls.
-  image: https://liquidagent.ai/icon.png
+- aid: liquidagent-ai:liquidagent-ai-liquid-agent-api
+  name: Liquid Agent Liquid Agent API
+  description: The Liquid Agent API from Liquid Agent — 15 operation(s) for liquid agent.
   humanURL: https://api.liquidagent.ai/v1/guide
   baseURL: https://api.liquidagent.ai
   tags:
-  - Tokenized Stocks
-  - DeFi
-  - x402
-  - Gas Sponsorship
-  - Account Abstraction
-  - Market Data
+  - Liquid Agent
   properties:
   - type: OpenAPI
-    url: openapi/liquidagent-ai-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted)
-    url: https://api.liquidagent.ai/openapi.json
+    url: openapi/liquidagent-ai-liquid-agent-api-openapi.yml
   - type: Documentation
     url: https://api.liquidagent.ai/v1/guide
   - type: APIReference
     url: https://api.liquidagent.ai/openapi.json
   - type: GettingStarted
-    name: Quickstart (README, create -> buy -> rebalance -> exit)
     url: https://github.com/LiquidAgent/liquidagentx402#readme
   - type: Examples
-    name: Runnable code examples (JavaScript/viem, Python/web3, curl)
     url: https://github.com/LiquidAgent/liquidagentx402/tree/main/examples
   - type: LLMsTxt
     url: llms/liquidagent-ai-llms.txt
   - type: LLMsTxt
-    name: llms.txt (provider-hosted)
     url: https://api.liquidagent.ai/llms.txt
   - type: Authentication
     url: authentication/liquidagent-ai-authentication.yml
@@ -103,8 +100,6 @@ apis:
     url: errors/liquidagent-ai-problem-types.yml
   - type: DataModel
     url: data-model/liquidagent-ai-data-model.yml
-  - type: Overlay
-    url: overlays/liquidagent-ai-openapi-overlay.yaml
   - type: Plans
     url: plans/liquidagent-ai-plans-pricing.yml
   - type: RateLimits
@@ -113,12 +108,6 @@ apis:
     url: conformance/liquidagent-ai-conformance.yml
   - type: Lifecycle
     url: lifecycle/liquidagent-ai-lifecycle.yml
-  - type: AgentSkill
-    name: liquid-agent-stocks (provider-published SKILL.md)
-    url: skills/liquidagent-ai-liquid-agent-stocks.md
-  - type: AgentSkill
-    name: liquid-gas-sponsor (provider-published SKILL.md)
-    url: skills/liquidagent-ai-liquid-gas-sponsor.md
   - type: AgenticAccess
     url: agentic-access/liquidagent-ai-agentic-access.yml
 maintainers:
@@ -127,6 +116,12 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/liquidagent-ai-openapi-overlay.yaml
+- type: AgentSkill
+  url: skills/liquidagent-ai-liquid-agent-stocks.md
+- type: AgentSkill
+  url: skills/liquidagent-ai-liquid-gas-sponsor.md
 - type: Website
   url: https://liquidagent.ai/
 - type: GitHubOrganization
@@ -167,3 +162,13 @@ x-enrichment:
   status: enriched
   artifacts_added: 28
   pass: local-v3
+x-x402:
+  verified: true
+  probed: '2026-09-24'
+  url: "https://api.liquidagent.ai/v1/gas"
+  evidence:
+  - "header:payment-required"
+  - "header:x-payment-required"
+  - "body:x402Version"
+  - "body:accepts[scheme,payTo,asset]"
+  control: 404

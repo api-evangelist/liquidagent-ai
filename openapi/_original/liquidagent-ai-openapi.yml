@@ -1,3 +1,5 @@
+# x-archived-from: liquidagent-ai-openapi.yml
+# x-archived-on: 2026-09-26
 # Verbatim conversion of https://api.liquidagent.ai/openapi.json (fetched 2026-09-19) from JSON to YAML.
 # Original bytes: openapi/_original/liquidagent-ai-openapi-original.json. No content was changed.
 openapi: 3.1.0

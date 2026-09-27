@@ -1,0 +1,30 @@
+{
+  "provider": "liquidagent-ai",
+  "sources": [
+    "_original/liquidagent-ai-openapi-original.json",
+    "liquidagent-ai-openapi.yml",
+    "well-known/liquidagent-ai-x402.json"
+  ],
+  "outputs": [
+    "liquidagent-ai-liquid-agent-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/liquidagent-ai-openapi.yml",
+    "archived well-known/liquidagent-ai-x402.json"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "discovered stray spec: well-known/liquidagent-ai-x402.json",
+    "liquidagent-ai-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "liquidagent-ai-openapi-original.json: declared missing tag: Liquid Agent",
+    "liquidagent-ai-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "liquidagent-ai-openapi.yml: declared missing tag: Liquid Agent",
+    "liquidagent-ai-x402.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "liquidagent-ai-x402.json: declared missing tag: Liquid Agent",
+    "tag 'Liquid Agent' spans 3 source specs (liquidagent-ai-openapi-original.json, liquidagent-ai-openapi.yml, liquidagent-ai-x402.json): per-path servers applied",
+    "apis.yml register: written (+1 apis, 1 total)"
+  ],
+  "skipped": []
+}
