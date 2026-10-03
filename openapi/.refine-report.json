@@ -1,30 +1,24 @@
 {
   "provider": "liquidagent-ai",
   "sources": [
-    "_original/liquidagent-ai-openapi-original.json",
-    "liquidagent-ai-openapi.yml",
-    "well-known/liquidagent-ai-x402.json"
+    "_original/liquidagent-ai-openapi-original.json"
   ],
   "outputs": [
     "liquidagent-ai-liquid-agent-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/liquidagent-ai-openapi.yml",
-    "archived well-known/liquidagent-ai-x402.json"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "2 archived document(s) dropped as subsets of other archived documents",
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "discovered stray spec: well-known/liquidagent-ai-x402.json",
     "liquidagent-ai-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "liquidagent-ai-openapi-original.json: declared missing tag: Liquid Agent",
-    "liquidagent-ai-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "liquidagent-ai-openapi.yml: declared missing tag: Liquid Agent",
-    "liquidagent-ai-x402.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "liquidagent-ai-x402.json: declared missing tag: Liquid Agent",
-    "tag 'Liquid Agent' spans 3 source specs (liquidagent-ai-openapi-original.json, liquidagent-ai-openapi.yml, liquidagent-ai-x402.json): per-path servers applied",
-    "apis.yml register: written (+1 apis, 1 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "_original/liquidagent-ai-x402.json: archived document superseded by a larger archived document",
+    "_original/liquidagent-ai-openapi.yml: archived document superseded by a larger archived document",
+    "liquidagent-ai-liquid-agent-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
