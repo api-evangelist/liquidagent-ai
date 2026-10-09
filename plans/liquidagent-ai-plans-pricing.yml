@@ -60,3 +60,39 @@ payment:
   assets: {base: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', polygon: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', solana: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v}
   payTo: {evm: '0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90', solana: BBcAL97dyJPGmsjQ7pPxCdUsFk1wgZ6jqYQ4DFvCVHkn}
   facilitator: PayAI (named in the gas-sponsor SKILL.md)
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units: []
+  plans:
+  - name: Free reads and transaction builders
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: Basket signals (GET /v1/signals)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: Shareable portfolio page (POST /v1/publish)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: Gas sponsor (POST /v1/gas, POST /v1/gas/solana)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
