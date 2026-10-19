@@ -1,25 +1,27 @@
 {
   "provider": "liquidagent-ai",
   "sources": [
-    "_original/liquidagent-ai-openapi-original.json"
+    "_original/liquidagent-ai-openapi.json"
   ],
   "outputs": [
-    "liquidagent-ai-liquid-agent-api-openapi.yml"
+    "liquidagent-ai-leads-api-openapi.yml",
+    "liquidagent-ai-liquid-agent-api-openapi.yml",
+    "liquidagent-ai-liquid-bridge-api-openapi.yml",
+    "liquidagent-ai-polymarket-api-openapi.yml",
+    "liquidagent-ai-shops-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
-    "3 archived document(s) dropped as subsets of other archived documents",
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "liquidagent-ai-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "liquidagent-ai-openapi-original.json: declared missing tag: Liquid Agent",
-    "apis.yml register: already-registered"
+    "liquidagent-ai-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "liquidagent-ai-openapi.json: declared missing tag: Leads",
+    "liquidagent-ai-openapi.json: declared missing tag: Liquid Agent",
+    "liquidagent-ai-openapi.json: declared missing tag: Liquid Bridge",
+    "liquidagent-ai-openapi.json: declared missing tag: Polymarket",
+    "liquidagent-ai-openapi.json: declared missing tag: Shops",
+    "apis.yml register: written (+4 apis, 5 total)"
   ],
-  "skipped": [
-    "_original/liquidagent-ai-x402_2.json: archived document superseded by a larger archived document",
-    "_original/liquidagent-ai-x402.json: archived document superseded by a larger archived document",
-    "_original/liquidagent-ai-openapi.yml: archived document superseded by a larger archived document",
-    "liquidagent-ai-liquid-agent-api-openapi.yml: previously refined output, superseded by openapi/_original/"
-  ]
+  "skipped": []
 }

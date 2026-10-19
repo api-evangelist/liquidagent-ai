@@ -110,6 +110,46 @@ apis:
     url: lifecycle/liquidagent-ai-lifecycle.yml
   - type: AgenticAccess
     url: agentic-access/liquidagent-ai-agentic-access.yml
+- aid: liquidagent-ai:liquidagent-ai-leads-api
+  name: Liquid Agent Leads API
+  description: The Leads API from Liquid Agent — 6 operation(s) for leads.
+  humanURL: https://api.liquidagent.ai/v1/guide
+  baseURL: https://api.liquidagent.ai
+  tags:
+  - Leads
+  properties:
+  - type: OpenAPI
+    url: openapi/liquidagent-ai-leads-api-openapi.yml
+- aid: liquidagent-ai:liquidagent-ai-liquid-bridge-api
+  name: Liquid Agent Liquid Bridge API
+  description: The Liquid Bridge API from Liquid Agent — 10 operation(s) for liquid bridge.
+  humanURL: https://api.liquidagent.ai/v1/guide
+  baseURL: https://api.liquidagent.ai
+  tags:
+  - Liquid Bridge
+  properties:
+  - type: OpenAPI
+    url: openapi/liquidagent-ai-liquid-bridge-api-openapi.yml
+- aid: liquidagent-ai:liquidagent-ai-polymarket-api
+  name: Liquid Agent Polymarket API
+  description: The Polymarket API from Liquid Agent — 8 operation(s) for polymarket.
+  humanURL: https://api.liquidagent.ai/v1/guide
+  baseURL: https://api.liquidagent.ai
+  tags:
+  - Polymarket
+  properties:
+  - type: OpenAPI
+    url: openapi/liquidagent-ai-polymarket-api-openapi.yml
+- aid: liquidagent-ai:liquidagent-ai-shops-api
+  name: Liquid Agent Shops API
+  description: The Shops API from Liquid Agent — 2 operation(s) for shops.
+  humanURL: https://api.liquidagent.ai/v1/guide
+  baseURL: https://api.liquidagent.ai
+  tags:
+  - Shops
+  properties:
+  - type: OpenAPI
+    url: openapi/liquidagent-ai-shops-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
