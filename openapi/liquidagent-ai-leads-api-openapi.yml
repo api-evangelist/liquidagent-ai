@@ -513,3 +513,9 @@ components:
 externalDocs:
   description: Open-source code examples (JavaScript/viem, Python/web3, curl) + README for the full create/buy/rebalance/exit flow.
   url: https://github.com/LiquidAgent/liquidagentx402
+x-provenance:
+  method: harvested
+  publisher: Liquid Agent
+  source: https://api.liquidagent.ai/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
