@@ -64,18 +64,119 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Liquid Agent is an agent-native money layer on Base. For people it is a USDC account (yield, payments and stocks from one balance, through the app at liquidagent.ai); for AI agents it is a permissionless HTTP API at api.liquidagent.ai that mints a self-custodied ERC-4626 vault holding Coinbase's tokenized NVDA, META, AAPL and GOOGL, buys in from $1, sets custom weights, rebalances and exits to USDC or in-kind any block. Reads are free and need no key; every write returns unsigned calldata the agent signs with its own wallet. Three paid surfaces settle per call in USDC over x402 v2: basket rebalancing signals ($0.04), a shareable portfolio page ($0.25) and an ERC-4337 / ERC-7677 gas sponsor (from $0.03) on Base, Polygon and Solana.
+Liquid Agent is an agent-native money layer on Base: a USDC account for people (yield, payments and stocks from one balance, through the app) and, for AI agents, a permissionless HTTP API at api.liquidagent.ai that mints a self-custodied ERC-4626 vault holding Coinbase's tokenized NVDA, META, AAPL and GOOGL, buys in from $1, sets custom weights, rebalances and exits to USDC or in-kind any block. Reads are free and need no key; every write returns unsigned calldata the agent signs with its own wallet. Three paid surfaces settle per call in USDC over x402 v2: basket rebalancing signals ($0.04), a shareable portfolio page ($0.25) and an ERC-4337 / ERC-7677 gas sponsor (from $0.03) on Base, Polygon and Solana. The contract is a 17-operation OpenAPI 3.1.0 at api.liquidagent.ai/openapi.json, with an A2A agent card, llms.txt, agents.txt, an x402 resource catalog, an ERC-8004 on-chain identity and two provider-authored Agent Skills in the open-source examples repo.
 
-## Public surface (as profiled 2026-09-19)
+**Areas:** Tokenized Stocks · DeFi · Investing · Agentic Commerce · x402 · Stablecoins · Account Abstraction · Gas Sponsorship · Base · Solana · AI Agents · Agent-Native
 
-- Website: https://liquidagent.ai/ (Vercel-hosted single-page app; the human product)
-- API host and documentation: https://api.liquidagent.ai (the guide at /v1/guide is the only human-readable reference; docs.liquidagent.ai is a dead deployment)
-- OpenAPI 3.1.0, 17 operations: https://api.liquidagent.ai/openapi.json (saved to `openapi/`)
-- A2A agent card: https://api.liquidagent.ai/.well-known/agent-card.json (saved and graded in `a2a/`)
-- x402 discovery manifest and resource catalog: /.well-known/x402, /.well-known/x402-resources (saved in `well-known/`)
-- ERC-8004 registration (agentId 74094 on Base): /.well-known/erc8004.json
-- llms.txt and agents.txt: https://api.liquidagent.ai/llms.txt, /agents.txt
-- Self-measured status endpoint: https://api.liquidagent.ai/v1/status
-- Open-source examples, spec and two provider-authored Agent Skills (MIT): https://github.com/LiquidAgent/liquidagentx402
+## Liquid Agent on APIs.io
 
-Not found: an MCP server, a client library in any registry, OAuth/OIDC discovery, security.txt, an API catalog, a changelog, rate-limit documentation, terms or privacy pages, a sandbox or testnet.
+Everything profiled for Liquid Agent is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/liquidagent-ai/](https://apis.io/providers/liquidagent-ai/)** — or go straight to one of the APIs or properties below.
+
+### APIs (1)
+
+- [Liquid Agent Liquid Agent API](https://apis.io/apis/liquidagent-ai/liquidagent-ai-liquid-agent-api/) — The Liquid Agent API from Liquid Agent — 15 operation(s) for liquid agent.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [liquidagent-ai](https://apis.io/servers/liquidagent-ai/liquidagent-ai/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Liquidagent Ai Agentic Access](https://apis.io/agentic-access/liquidagent-ai/liquidagent-ai-agentic-access/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Liquidagent Ai Openapi Overlay](https://apis.io/overlays/liquidagent-ai/liquidagent-ai-openapi-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Liquidagent Ai Authentication](https://apis.io/security/liquidagent-ai/liquidagent-ai-authentication/)
+- [Liquidagent Ai Domain Security](https://apis.io/security/liquidagent-ai/liquidagent-ai-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Liquidagent Ai Plans Pricing](https://apis.io/plans/liquidagent-ai/liquidagent-ai-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Liquidagent Ai Rate Limits](https://apis.io/rate-limits/liquidagent-ai/liquidagent-ai-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://liquidagent.ai/)
+- [Pricing](https://api.liquidagent.ai/.well-known/x402-resources)
+- [GitHub](https://github.com/LiquidAgent)
+- [Status](https://api.liquidagent.ai/v1/status)
+
+## API Evangelist rating
+
+**Kin Score 43.3** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 54.8 |
+| Contract governance | 18.2 |
+| Operational transparency | 21.1 |
+| Developer ergonomics | 47.6 |
+| Access clarity | 42.1 |
+
+**Agent readiness 30.5** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | documented (partial credit) |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | yes |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | flavored (partial credit) |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 21.3** — Securities & Market Data
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/liquidagent-ai/](https://apis.io/providers/liquidagent-ai/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Liquid Agent: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/liquidagent-ai/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
